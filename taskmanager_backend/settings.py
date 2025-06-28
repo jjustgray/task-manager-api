@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     # Наші додатки:
     'rest_framework',
     'tasks',
-    'drf_spectacular'
+    'drf_spectacular',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,13 @@ REST_FRAMEWORK = {
     )
 }
 
+ASGI_APPLICATION = 'taskmanager_backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

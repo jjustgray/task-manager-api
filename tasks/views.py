@@ -3,6 +3,19 @@ from .models import Task, CustomUser
 from .serializers import TaskSerializer, RegisterSerializer
 from rest_framework.permissions import IsAuthenticated
 
+import redis
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+# 🔧 Ініціалізація Redis-клієнта (має бути зверху)
+redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
+
+@api_view(['GET'])
+def online_users_view(request):
+    users = redis_client.smembers("online_users")
+    usernames = [u.decode('utf-8') for u in users]
+    return Response({"online_users": usernames})
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()

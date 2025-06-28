@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h1>Перевірка WebSocket</h1>
+
+  <textarea id="log" rows="10" cols="50" readonly></textarea><br />
+  <input type="text" id="messageInput" placeholder="Введи повідомлення" />
+  <button onclick="sendMessage()">Надіслати</button>
+
+  <script>
+    const log = document.getElementById("log");
+    const username = prompt("Введіть ім'я користувача:", "user1") || "anonymous";
+    const ws = new WebSocket(`ws://localhost:8000/ws/tasks/?username=${username}`);
+
+
+
+    ws.onopen = () => {
+      log.value += "Підключено до WebSocket\n";
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      log.value += "Отримано: " + data.message + "\n";
+    };
+
+    ws.onclose = () => {
+      log.value += "З’єднання закрито\n";
+    };
+
+    function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const message = input.value;
+      ws.send(JSON.stringify({ message }));
+      log.value += "Надіслано: " + message + "\n";
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
